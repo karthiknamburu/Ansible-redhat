@@ -1,0 +1,26 @@
+
+- name: start an image which is NOT present on the host yet but on the private regisrty
+  docker:
+    name: docker_pull_test
+    username: "{{ registry_user }}"
+    password: "{{ registry_pass }}"
+    email: "{{ registry_mail }}"
+    image: karthiknamburu/dot-sims
+    command: /bin/echo success
+    state: present
+
+
+- name: Container is absent
+  docker:
+    image=karthiknamburu/dot-sims
+    name=sims
+    state=absent
+  tags: [sims]
+
+- name: Container is running
+  docker:
+    name=sims
+    image=karthiknamburu/dot-sims
+    ports=8080:8080
+    state=running
+  tags: [sims]
