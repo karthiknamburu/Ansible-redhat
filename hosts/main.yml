@@ -1,0 +1,8 @@
+[Rancher]
+rancher ansible_ssh_host=dotldevsimsci01.dotdev.com ansible_ssh_user=simsclient ansible_ssh_password=L1nuxn3ww0rld
+
+[nodes:children]
+application
+
+[application]
+node1 ansible_ssh_host=DOTLDEVSIMS01.dotdev.com ansible_ssh_user=simsclient ansible_ssh_password=L1nuxn3ww0rld

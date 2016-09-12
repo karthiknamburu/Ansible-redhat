@@ -1,38 +1,47 @@
-- name: Add Docker repository and update apt cache
-  apt_repository:
-    repo: deb https://apt.dockerproject.org/repo ubuntu-trusty main
-    update_cache: yes
-    state: present
-  tags: [docker]
+---
 
-- name: Docker is present
-  apt:
-    name: docker-engine
-    state: latest
-    force: yes
-  tags: [docker]
+- include_vars: "{{ ansible_os_family }}.yml"
 
-- name: Python-pip is present
-  apt: name=python-pip state=present
-  tags: [docker]
+- name: Create docker group
+  group: name=docker state=present system=yes
+  when: docker_create_group
+  sudo: yes
+  tags:
+    - config
+  
+- include: RedHat.yml
+  when: ansible_os_family == "RedHat"
+  sudo: yes
 
-- name: Debian docker-py is present
-  pip:
-    name: docker-py
-    version: 1.6.0
-    state: present
-  tags: [docker]
-
-- name: Files are present
+- name: proxy setup for docker service
   copy:
     src: docker
-    dest: /etc/default/docker
+    dest: /etc/sysconfig/docker
   register: copy_result
   tags: [docker]
 
-- name: Docker service is restarted
-  service:
-    name: docker
-    state: restarted
-  when: copy_result|changed
-  tags: [docker]
+# - name: Install Pip
+#   yum:
+#       name=python-py
+#   become: true
+
+- name: Install pip
+  command: pip install --proxy=https://10.243.128.27:8080 docker-py
+  become: true
+
+- name: Install httplib2
+  yum:
+      name=python-httplib2
+      update_cache=yes
+
+
+# - name: Docker-PY
+#   pip:
+#     name: "{{ item }}"
+#   with_items:
+#     - proxy==https://10.243.128.27:8080
+#     - six==1.4
+#     - docker-py==1.1.0
+#   become: true
+
+- include: init.yml

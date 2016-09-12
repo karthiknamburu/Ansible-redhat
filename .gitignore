@@ -1,0 +1,7 @@
+
+# Ignore git files.
+/.git
+
+.DS_Store
+
+ansible.cfg

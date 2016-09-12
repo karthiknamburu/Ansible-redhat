@@ -1,0 +1,5 @@
+---
+rancher_server: "{{ hostvars['rancher']['ansible_ssh_host'] }}"
+
+# sims variables
+sims_version: latest

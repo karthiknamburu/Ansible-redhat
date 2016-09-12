@@ -1,10 +1,28 @@
-- hosts: sims
-  remote_user: ubuntu
+---
+# play 1
+- name: Installing and configuring Docker 
+  hosts: all
   sudo: yes
   roles:
-    - docker
-    - rancher
-  vars:
-    registry_user: karthiknamburu
-    registry_pass: Usa@2013
-    registry_mail: namburu.karthik@gmail.com
+    - { role: docker, tags: ["docker"] }
+
+# play 2
+- name: Setting up Rancher Server
+  hosts: "rancher"
+  sudo: yes
+  roles:
+    - { role: rancher, tags: ["rancher"] }
+
+# play 3
+- name: Register Rancher Hosts
+  hosts: "nodes"
+  sudo: yes
+  roles:
+    - { role: rancher-reg, tags: ["rancher_reg"] }
+
+# play 5
+- name: Deploy SIMS application
+  hosts: "application"
+  sudo: yes
+  roles:
+    - { role: sims, tags: ["sims_docker"] }

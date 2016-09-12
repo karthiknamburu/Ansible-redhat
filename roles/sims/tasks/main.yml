@@ -1,18 +1,41 @@
 
-- name: start an image which is NOT present on the host yet but on the private regisrty
+
+# - name: upload the SIMS directory to the docker host
+#   sudo: yes
+#   synchronize: src=sims dest=/tmp/sims
+
+# - name: Build SIMS image ad push it to a repo
+#   docker_image:
+#     path: /tmp/sims
+#     name: karthiknamburu/dot-sims
+#     tag: "{{ ansible_date_time.date }}"
+#     state: present
+
+# - name: build the image
+#   command: docker build -t karthiknamburu/dot-sims:"{{ansible_date_time.date}}" /tmp/sims
+
+- name: Stop the current running SIMS container
+  docker:
+    image: karthiknamburu/dot-sims:dot-0.9.2
+    state: stopped
+
+
+- name: start an image which is NOT present on the host yet
   docker:
     name: docker_pull_test
     username: "{{ registry_user }}"
     password: "{{ registry_pass }}"
     email: "{{ registry_mail }}"
-    image: karthiknamburu/dot-sims
+    image: karthiknamburu/dot-sims:dot-0.9.2
     command: /bin/echo success
     state: present
-
+    detach: True
+    publish_all_ports: true
+    env: RANCHER_NETWORK=true
 
 - name: Container is absent
   docker:
-    image=karthiknamburu/dot-sims
+    image=karthiknamburu/dot-sims:dot-0.9.2
     name=sims
     state=absent
   tags: [sims]
@@ -20,7 +43,7 @@
 - name: Container is running
   docker:
     name=sims
-    image=karthiknamburu/dot-sims
-    ports=8080:8080
+    image=karthiknamburu/dot-sims:dot-0.9.2
+    ports=80:80
     state=running
   tags: [sims]

@@ -1,1 +1,4 @@
-DOCKER_OPTS="$DOCKER_OPTS --insecure-registry 192.168.50.91:5000"
+HTTP_PROXY="http://10.243.128.27:8080/"
+HTTPS_PROXY="http://10.243.128.27:8080/"
+http_proxy="${HTTP_PROXY}"
+https_proxy="${HTTPS_PROXY}"
