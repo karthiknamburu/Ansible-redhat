@@ -1,6 +1,0 @@
----
-
-rancher_port: 8080 
-environment:
-  https_proxy: http://10.243.128.27:8080
-  http_proxy: http://10.243.128.27:8080
